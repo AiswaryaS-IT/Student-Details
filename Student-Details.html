@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <style>
+    body{
+      font-family: 'Times New Roman', Times, serif;
+      font-weight:400;
+      background: transparent;
+      background-color:rgba(237, 228, 228, 0.992) ;
+    }
+    h1{
+      padding-left: 55px;
+      padding-top: 0px;
+      padding-bottom: 20px;
+    }
+    #SDH{
+        padding-left: 100px;
+      }
+    ul{
+      list-style: none;
+      display: inline-flex;
+      .list1 {
+        margin-right: 10px;
+        column-gap: 0px;
+      }
+      .buttons{
+        padding-left: 0px;
+        column-gap: 7px;
+        padding-bottom: 10px;
+      }
+    }
+    #rebtn{
+      margin-left: 100px;
+      width: 100px;
+    }
+    button{
+      width: 70px;
+      border-radius: 5px;
+      background-color: rgb(44, 47, 47);
+      color: rgb(255, 255, 255);
+    }
+      .form{
+        padding-left: 10%;
+        padding-top: 3%;
+        border: 1.5px solid darkgrey;
+        box-sizing: border-box;
+        border-left: 30%;
+        position: absolute;
+        top: 1.5em;
+        left: 10%;
+        width: 40%;
+        bottom: 0.5em;
+        height: 90%;
+        margin: 5px;
+        box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        border-radius: 20px;
+        background-color: white;
+      }
+      select,input{
+        width: 300px;
+        height: 30px;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 4px 10px 0 rgba(0, 0, 0, 0.19);
+        border: 1px solid;
+        border-radius: 2.5px;
+      }
+      .MyTable{
+        padding-top: 2%;
+        padding-left: 55%;
+        letter-spacing: 0.5px;
+        position: absolute;
+      }
+  </style>
+</head>
+<body>
+  <ul class="list1">
+    <li>
+  <div class="form">
+  <form>
+    <h1>Fill Details</h1><br><br>
+    <label for="RollNo">Roll Number: </label><br>
+    <input type="text" name="RollNo" id="RollNo" placeholder="  yy-dept-rollno"><br><br>
+    <label for="name">Name: </label><br>
+    <input type="text" name="name" id="Name" placeholder="  your-name"><br><br>
+    <label for="dept">Department: </label><br>
+    <select name="dept" id="dept">
+        <option value="default">--</option>
+        <option value="CSE">Computer Science</option>
+        <option value="IT">Information Technology</option>
+        <option value="ECE">Electronics and Communication</option>
+        <option value="EEE">Electrical and Electronics</option>
+        <option value="CIV">Civil</option>
+        <option value="MECH">Mechanical</option>
+    </select><br><br>
+    <label for="sem">Semester: </label><br>
+    <select name="sem" id="sem">
+        <option value="default">--</option>
+        <option value="first">First</option>
+        <option value="second">Second</option>
+        <option value="third">Third</option>
+        <option value="fourth">Fourth</option>
+    </select><br><br>
+    <label for="CGPA">CGPA: </label><br>
+    <input type="number" name="CGPA" id="CGPA" placeholder=" your-cgpa"><br><br>
+</form>
+<ul class="buttons">
+<li><button id="addbtn" onclick="AddDetails()">Add</button></li>
+<li><button id="disbtn" onclick="ReData()">Retrieve</button></li>
+<li><button id="upbtn" onclick="UpdateDetails()">Update</button></li>
+<li><button id="delbtn" onclick="DeleteDetails()">Delete</button></li>
+</ul>
+<button id="rebtn" onclck="DisplayDetails()">Display All</button>
+</div>
+</li>
+<li class="MyTable">
+  <h1 id="SDH">Student Details</h1>
+<div class="container mt-3">
+  <table border="1" class="table table-dark">
+    <thead><tr id="trh">
+      <th id="thslno">Serial No</th>
+      <th id="throle">Roll No</th>
+      <th id="thname">Name</th>
+      <th id="thdept">Department</th>
+      <th id="thsem">Semester</th>
+      <th id="thcgpa">CGPA</th>
+    </tr></thead>
+    <tbody id="tbody1">
+      <tr>
+        <td>--</td>
+        <td>--</td>
+        <td>--</td>
+        <td>--</td>
+        <td>--</td>
+        <td>--</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</li>
+</ul>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyBVQjCZ-Mv11oRd8iC1Z5uGW9Si_gVQ6KI",
+    authDomain: "homepage-c00e0.firebaseapp.com",
+    projectId: "homepage-c00e0",
+    storageBucket: "homepage-c00e0.appspot.com",
+    messagingSenderId: "1061983995189",
+    appId: "1:1061983995189:web:d7e762cf6a173f2e28b87c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  import {getDatabase, ref, child, get, set, update, remove} from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
+  const db=getDatabase();
+  let RollNo=document.getElementById('RollNo');
+  let Name=document.getElementById('Name');
+  let dept=document.getElementById('dept');
+  let sem=document.getElementById('sem');
+  let CGPA=document.getElementById('CGPA');
+  var SlNo=0;
+  let addbtn=document.getElementById('addbtn');
+  let disbtn=document.getElementById('disbtn');
+  let upbtn=document.getElementById('upbtn');
+  let delbtn=document.getElementById('delbtn');
+  let rebtn=document.getElementById('rebtn');
+  var tbody=document.getElementById('tbody1');
+  const dbRef=ref(db);
+  function AddDetails(){
+    set(ref(db,"HomePage/"+RollNo.value),{
+      RollNumber: RollNo.value,
+      Name: Name.value,
+      Department: dept.value,
+      Semester: sem.value,
+      CGPA:CGPA.value
+    })
+    .then(()=>{
+      alert("Data Added Suucessfully");
+    })
+    .catch((error)=>{
+      alert("Unsuccessful");
+      console.log(error);
+    });
+  }
+  function ReData(){
+   // const dbRef=ref(db);
+    get(child(dbRef, 'HomePage/'+RollNo.value)).then((snapshot)=>{
+      if(snapshot.exists()){
+        RollNo.value=snapshot.val().RollNumber;
+        Name.value=snapshot.val().Name;
+        dept.value=snapshot.val().Department;
+        sem.value=snapshot.val().Semester;
+        CGPA.value=snapshot.val().CGPA;
+      }
+      else{
+        alert("Roll Number Not available");
+      }
+    })
+    .catch((error)=>{
+      alert("Unsuccessful");
+      console.log(error);
+    })
+  }
+  function UpdateDetails(){
+    get(child(dbRef, 'HomePage/'+RollNo.value)).then((snapshot)=>{
+      if(snapshot.exists()){
+    update(ref(db,'HomePage/'+RollNo.value),{
+      Name: Name.value,
+      Department: dept.value,
+      Semester: sem.value,
+      CGPA: CGPA.value,
+    }).then(()=>{
+      alert("Data Upated Suucessfully");
+    })}
+    else{
+        alert("Roll Number Not available");
+      }
+      }).catch((error)=>{
+      alert("Unsuccessful");
+      console.log(error);
+    });
+  }
+  function DeleteDetails(){
+    remove(ref(db,'HomePage/'+RollNo.value))
+    .then(()=>{
+      alert("Data Deleted Suucessfully");
+    }).catch((error)=>{
+      alert("Unsuccessful");
+      console.log(error);
+    });
+  }
+  function DisplayDetails(RollNumber,Name,Department,Semester,CGPA){
+    let trow=document.createElement("tr");
+    let td1=document.createElement('td');
+    let td2=document.createElement('td');
+    let td3=document.createElement('td');
+    let td4=document.createElement('td');
+    let td5=document.createElement('td');
+    let td6=document.createElement('td');
+
+    td1.innerHTML=++SlNo;
+    td2.innerHTML=RollNumber;
+    td3.innerHTML=Name;
+    td4.innerHTML=Department;
+    td5.innerHTML=Semester;
+    td6.innerHTML=CGPA;
+
+    trow.appendChild(td1);
+    trow.appendChild(td2);
+    trow.appendChild(td3);
+    trow.appendChild(td4);
+    trow.appendChild(td5);
+    trow.appendChild(td6);
+    tbody.appendChild(trow);
+
+  }
+  function AddToTable(TheStudent){
+    SlNo=0;
+    tbody.innerHTML="";
+    TheStudent.forEach(element=>{
+      DisplayDetails(element.RollNumber,element.Name,element.Department,element.Semester,element.CGPA);
+    });
+  }
+  function GetAllAtOnce(){
+    get(child(dbRef,"HomePage/"))
+    .then((snapshot)=>{
+      var students=[];
+      snapshot.forEach(childSnapshot=>{
+        students.push(childSnapshot.val());
+      });
+      AddToTable(students);
+    });
+  }
+  addbtn.addEventListener('click',AddDetails);
+  disbtn.addEventListener('click',ReData);
+  rebtn.addEventListener('click',GetAllAtOnce);
+  upbtn.addEventListener('click',UpdateDetails);
+  delbtn.addEventListener('click',DeleteDetails);
+</script>
+</body>
+</html>  
